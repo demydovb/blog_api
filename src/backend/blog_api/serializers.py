@@ -5,7 +5,7 @@ from .models import Post, Profile, PostWord
 
 
 class PostSerializer(serializers.ModelSerializer):
-  """ Model Serializer for Post """
+  """ Model Serializer for  List Post """
 
   author = serializers.CharField(source='author.username', required=False)
   class Meta:
@@ -27,6 +27,9 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 class PostDetailSerializer(serializers.ModelSerializer):
+  """ Model Serializer for Detail Post """
+
+  author = serializers.CharField(source='author.username', required=False)
   class Meta:
     model = Post
     fields = ('author', 'title', 'content', 'published', 'updated', 'id')
@@ -71,6 +74,11 @@ class UserSerializer(serializers.ModelSerializer):
       last_name=validated_data['last_name'],
       email=validated_data['email'],
     )
+
+    if validated_data.get("profile", False):
+      profile = Profile.objects.create(**validated_data["profile"], user=user)
+      user.profile = profile
+      user.save()
     return user
 
   def update(self, instance, validated_data):
