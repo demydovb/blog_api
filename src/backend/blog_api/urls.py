@@ -1,17 +1,24 @@
-from django.urls import include, path
+from django.urls import path
+from rest_framework import routers
 from rest_framework_jwt.views import obtain_jwt_token
 
 from .views import (
-  BlogPostListView,
+  PostListViewSet,
   RegistrationView,
   ProfileView,
-  # AuthView,
+  StatisticViewSet,
 )
 
 urlpatterns = [
-  path('', BlogPostListView.as_view(), name='posts'),
-  path('registration', RegistrationView.as_view(), name='registration'),
-  path('auth/login', obtain_jwt_token, name='auth'),
-  path('profile', ProfileView.as_view(), name='profile'),
+  path('registration/', RegistrationView.as_view(), name='registration'),
+  path('auth/login/', obtain_jwt_token, name='auth'),
+  path('profile/', ProfileView.as_view(), name='profile'),
     ]
 
+posts_router = routers.SimpleRouter()
+posts_router.register('posts', PostListViewSet)
+urlpatterns += posts_router.urls
+
+statistics_router = routers.SimpleRouter()
+statistics_router.register('statistics', StatisticViewSet, base_name='statistics')
+urlpatterns += statistics_router.urls

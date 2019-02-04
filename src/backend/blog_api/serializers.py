@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 
 from rest_framework import serializers
-from .models import Post, Profile
+from .models import Post, Profile, PostWord
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -10,18 +10,38 @@ class PostSerializer(serializers.ModelSerializer):
   author = serializers.CharField(source='author.username', required=False)
   class Meta:
     model = Post
-    fields = ('title', 'content', 'published', 'updated', 'author')
+    fields = ('author', 'title', 'published', 'updated', 'id')
 
 
   def create(self, validated_data):
+    if not self.context['request'].data.get('content', False):
+      raise serializers.ValidationError("You cannot post new article without content")
+
     post = Post.objects.create(
       title=validated_data['title'],
-      content=validated_data['content'],
+      content=self.context['request'].data['content'],
       author = self.context['request'].user
     )
 
     return post
 
+
+class PostDetailSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Post
+    fields = ('author', 'title', 'content', 'published', 'updated', 'id')
+    extra_kwargs = {
+      'author': {'read_only': True},
+      'title': {'required': False},
+      'content': {'required': False},
+    }
+
+  def update(self, instance, validated_data):
+    for attr, value in validated_data.items():
+      setattr(instance, attr, value)
+
+    instance.save()
+    return instance
 
 class AuthorSerializer(serializers.ModelSerializer):
   """ Model Serializer for Author """
@@ -91,3 +111,18 @@ class UserSerializer(serializers.ModelSerializer):
     return data
 
 
+class WordsInPostSerializer(serializers.ModelSerializer):
+  """ Model Serializer for all unique words in post """
+
+  word = serializers.CharField(source='word.word')
+  class Meta:
+    model = PostWord
+    fields = ('word', 'occurrence')
+
+class CalculatedWordsFromAllSerializer(serializers.Serializer):
+  """ Serializer for calculated words from all posts """
+  unique_word = serializers.CharField(max_length=200)
+  occurrence = serializers.IntegerField()
+
+  class Meta:
+    fields = ('unique_word', 'occurrence')
