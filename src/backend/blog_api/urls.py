@@ -1,4 +1,5 @@
 from django.urls import path
+from django.views.generic import RedirectView
 from rest_framework import routers
 from rest_framework_jwt.views import obtain_jwt_token
 from rest_framework_swagger.views import get_swagger_view
@@ -14,6 +15,7 @@ from .views import (
 schema_view = get_swagger_view(title='Blog API')
 
 urlpatterns = [
+  path('', RedirectView.as_view(url='posts', permanent=True)),
   path('registration/', RegistrationView.as_view(), name='registration'),
   path('auth/login/', obtain_jwt_token, name='auth'),
   path('profile/', ProfileView.as_view(), name='profile'),
