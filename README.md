@@ -22,5 +22,8 @@ Start app:
 
 Load db dumb (not required):
   `python manage.py loaddata  db.json`
+  
+Running tests:
+  `python manage.py test`
 
 **API Documentation** - http://localhost:8000/docs/

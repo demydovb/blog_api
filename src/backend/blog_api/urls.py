@@ -23,7 +23,7 @@ urlpatterns = [
     ]
 
 posts_router = routers.SimpleRouter()
-posts_router.register('posts', PostListDetailViewSet)
+posts_router.register('posts', PostListDetailViewSet, 'post')
 urlpatterns += posts_router.urls
 
 statistics_router = routers.SimpleRouter()
