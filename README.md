@@ -18,10 +18,6 @@ Start app:
 3) Start celery: `celery worker -A blog_api --loglevel=debug --concurrency=1` ( in new terminal)
 4) Apply migrations: `python manage.py migrate`
 5) Start server: `python manage.py runserver`
-
-
-Load db dumb (not required):
-  `python manage.py loaddata  db.json`
   
 Running tests:
   `python manage.py test`
