@@ -1,9 +1,11 @@
-from .celery import app
-from collections import Counter
 import re
+import os
+import clearbit
+from collections import Counter
+from dotenv import load_dotenv, find_dotenv
 
-from .models import Word, PostWord, Post
-
+from .celery import app
+from .models import Word, PostWord, Post, Profile, User
 
 
 @app.task
@@ -34,3 +36,16 @@ def count_words(id, created):
         word_to_update = PostWord.objects.get(post=instance, word__word=new_postword)
         word_to_update.occurrence = value
         word_to_update.save()
+
+@app.task
+def get_profile_info_from_clearbit(id, email):
+  load_dotenv(find_dotenv())
+  clearbit.key = os.getenv('CLEARBIT_KEY')
+  response = clearbit.Enrichment.find(email=email, stream=True)
+  if response['person'] is not None:
+    user = User.objects.get(id=id)
+    location = response['person'].get('location', '')
+    bio = response['person'].get('bio', '')
+    profile = Profile.objects.create(location=location, user=user)
+    user.profile = profile
+    user.save()

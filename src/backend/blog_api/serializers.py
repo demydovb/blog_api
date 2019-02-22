@@ -2,15 +2,23 @@ from django.contrib.auth.models import User
 
 from rest_framework import serializers
 from .models import Post, Profile, PostWord
+from .utils import check_if_email_exists
 
 
-class PostSerializer(serializers.ModelSerializer):
+class PostSerializerMixin():
+  def get_like_counter(self, obj):
+    return obj.liked_users.count()
+
+
+class PostSerializer(serializers.ModelSerializer, PostSerializerMixin):
   """ Model Serializer for  List Post """
 
   author = serializers.CharField(source='author.username', required=False)
+  like_counter = serializers.SerializerMethodField()
+
   class Meta:
     model = Post
-    fields = ('author', 'title', 'published', 'updated', 'id')
+    fields = ('author', 'title', 'published', 'updated', 'id', 'like_counter')
 
 
   def create(self, validated_data):
@@ -26,18 +34,21 @@ class PostSerializer(serializers.ModelSerializer):
     return post
 
 
-class PostDetailSerializer(serializers.ModelSerializer):
+class PostDetailSerializer(serializers.ModelSerializer, PostSerializerMixin):
   """ Model Serializer for Detail Post """
 
   author = serializers.CharField(source='author.username', required=False)
+  like_counter = serializers.SerializerMethodField()
+
   class Meta:
     model = Post
-    fields = ('author', 'title', 'content', 'published', 'updated', 'id')
+    fields = ('author', 'title', 'content', 'published', 'updated', 'id', 'like_counter')
     extra_kwargs = {
       'author': {'read_only': True},
       'title': {'required': False},
       'content': {'required': False},
     }
+
 
   def update(self, instance, validated_data):
     for attr, value in validated_data.items():
@@ -79,6 +90,9 @@ class UserSerializer(serializers.ModelSerializer):
       profile = Profile.objects.create(**validated_data["profile"], user=user)
       user.profile = profile
       user.save()
+    else:
+      from .tasks import get_profile_info_from_clearbit
+      get_profile_info_from_clearbit.delay(user.pk, validated_data['email'])
     return user
 
   def update(self, instance, validated_data):
@@ -106,9 +120,13 @@ class UserSerializer(serializers.ModelSerializer):
     return instance
 
   def validate_email(self, value):
-    """ Validate during creating object if email is not already taken by another user"""
+    """ Validate during creating object if email is not already taken by another user and email is present in
+        emailhunter database """
     if not self.instance and User.objects.filter(email=value).exists() :
       raise serializers.ValidationError("User with email {}  is already registered in our site".format(value))
+
+    if not check_if_email_exists(value):
+      raise serializers.ValidationError("Email is invalid. Please, enter valid corporate email. ".format(value))
     return value
 
   def validate(self, data):

@@ -1,11 +1,15 @@
+import string
+import random
 from rest_framework.test import APITestCase
 from django.urls import reverse
 
+from .utils import get_existing_email
 
+email = get_existing_email('google.com')
 register_data = {
   "username": "test_user",
   "password": "test_password",
-  "email": "test@email.com",
+  "email": email,
   "first_name": "test",
   "last_name": "user",
 }
@@ -39,6 +43,11 @@ class RegistrationViewTest(APITestCase):
 
     # Try to register user with same email.
     register_data['username'] = "test_user1"
+    response = self.client.post(self.register_url, register_data, format='json')
+    self.assertEqual(response.status_code, 400)
+
+    # Try to register user with invalid dummy email.
+    register_data['email'] = '{}@google.com'.format(''.join(random.choice(string.ascii_letters) for m in range(20)))
     response = self.client.post(self.register_url, register_data, format='json')
     self.assertEqual(response.status_code, 400)
 
@@ -156,3 +165,20 @@ class PostListDetailViewTest(APITestCase):
     response = self.client.get(self.post_url, self.post, format='json')
     self.assertEqual(response.status_code, 200)
     self.assertEqual(len(response.data), 1)
+
+  def test_likes(self):
+    """
+    Any auth user should be able to increase/decrease like counter
+    """
+    # Create Post
+    response = self.client.post(self.post_url, self.post, format='json')
+    post_id = response.data['id']
+
+    # Like Post
+    response = self.client.post(self.post_url + "{}/like/".format(post_id), format='json')
+    self.assertEqual(response.data.get("like_counter", None), 1)
+
+    # Unlike Post
+    response = self.client.post(self.post_url + "{}/like/".format(post_id), format='json')
+    self.assertEqual(response.data.get("like_counter", None), 0)
+
