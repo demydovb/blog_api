@@ -13,7 +13,15 @@ Install requirements:
   `pip install requirements.txt`
 
 Start app:
-1) Enter your emailhunter and clearbit  related keys in `./.env`
+1) Create .env file in root directory and populate it with data:
+
+>  EMAILHUNTERS_KEY=XXX<br />
+>  CLEARBIT_KEY=XXX<br />
+>  BOT_CONF_NUMBER_OF_USERS=INT<br />
+>  BOT_CONF_MAX_POSTS_PER_USER=INT<br />
+>  BOT_CONF_MAX_LIKES_PER_USER=INT<br />
+ 
+
 2) Start redis server: `redis-server` (in new terminal)
 3) Change directory to **/blog_api/src/backend** `cd ./blog_api/src/backend`
 4) Start celery: `celery worker -A blog_api --loglevel=debug` ( in new terminal)
