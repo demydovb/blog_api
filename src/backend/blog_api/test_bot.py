@@ -36,7 +36,7 @@ def create_user_and_posts(i):
   r = requests.post(BASE_URL + reverse('registration'), json.dumps(register_data), headers=HEADERS)
 
   print("User {} creating posts...".format(register_data['username']))
-  for i in range(int(os.getenv('BOT_CONF_MAX_POSTS_PER_USER'))):
+  for i in range(random.randint(1,int(os.getenv('BOT_CONF_MAX_POSTS_PER_USER')))):
     post_content = {
       "title": generate_random_string(),
       "content": generate_random_string(),
@@ -65,7 +65,7 @@ def generate_posts():
 
 
 def like_posts(token, posts):
-  for _ in range(int(os.getenv('BOT_CONF_MAX_LIKES_PER_USER'))):
+  for i in range(random.randint(1,int(os.getenv('BOT_CONF_MAX_LIKES_PER_USER')))):
     post_to_like = posts.pop()
     headers = {'Authorization': 'JWT {0}'.format(token), **HEADERS}
     requests.post("{}{}/like/".format(BASE_URL + reverse('post-list'), post_to_like), headers=headers)
