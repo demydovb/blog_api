@@ -23,7 +23,7 @@ Start app:
  
 
 2) Start redis server: `redis-server` (in new terminal)
-3) Change directory to **/blog_api/src/backend** `cd ./blog_api/src/backend`
+3) Change directory to **/blog_api/src/backend** `cd ./src/backend`
 4) Start celery: `celery worker -A blog_api --loglevel=debug` ( in new terminal)
 5) Apply migrations: `python manage.py migrate`
 6) Start server: `python manage.py runserver`

@@ -109,10 +109,10 @@ class PostListDetailViewSet(viewsets.ModelViewSet):
     liked_post = get_object_or_404(Post, pk=pk)
     user = self.request.user
     if user not in liked_post.liked_users.all():
-      liked_post.liked_users.add(self.request.user)
+      user.liked_posts.add(liked_post)
     else:
-      liked_post.liked_users.remove(self.request.user)
-    liked_post.save()
+      user.liked_posts.remove(liked_post)
+    user.save()
     serializer = PostDetailSerializer(liked_post)
     return response.Response(serializer.data)
 
