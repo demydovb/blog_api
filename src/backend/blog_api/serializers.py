@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
-
 from rest_framework import serializers
+
 from .models import Post, Profile, PostWord
 from .utils import check_if_email_exists
 
@@ -91,7 +91,7 @@ class UserSerializer(serializers.ModelSerializer):
       user.profile = profile
       user.save()
     else:
-      from .tasks import get_profile_info_from_clearbit
+      from celery_tasks.tasks import get_profile_info_from_clearbit
       get_profile_info_from_clearbit.delay(user.pk, validated_data['email'])
     return user
 

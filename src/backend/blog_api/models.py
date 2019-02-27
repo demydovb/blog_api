@@ -1,12 +1,12 @@
+from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import signals
-from django.contrib.auth.models import User
 
 
 class Profile(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-  bio = models.TextField(max_length=500, blank=True)
-  location = models.CharField(max_length=30, blank=True)
+  bio = models.TextField(max_length=500, null=True)
+  location = models.CharField(max_length=30, null=True)
 
   def __str__(self):
     return "{}'s profile".format(self.user.username)
@@ -40,7 +40,7 @@ class PostWord(models.Model):
     return "{} from post {}:{} occurrences".format(self.word.word, self.post.title, self.occurrence)
 
 def save_post(sender, instance, created, **kwargs):
-  from .tasks import count_words
+  from celery_tasks.tasks import count_words
   count_words.delay(instance.id, created)
 
 

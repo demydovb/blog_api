@@ -33,7 +33,16 @@ def create_user_and_posts(i):
     "first_name": generate_random_string(),
     "last_name": generate_random_string(),
   }
+  auth_data = {
+    'username': register_data['username'],
+    'password': register_data['password'],
+  }
   r = requests.post(BASE_URL + reverse('registration'), json.dumps(register_data), headers=HEADERS)
+
+  response = requests.post(BASE_URL + reverse('auth'), json.dumps(auth_data), headers=HEADERS)
+  token = response.json()['token']
+  tokens.append(token)
+  headers = {'Authorization': 'JWT {0}'.format(token), **HEADERS}
 
   print("User {} creating posts...".format(register_data['username']))
   for i in range(random.randint(1,int(os.getenv('BOT_CONF_MAX_POSTS_PER_USER')))):
@@ -41,14 +50,6 @@ def create_user_and_posts(i):
       "title": generate_random_string(),
       "content": generate_random_string(),
     }
-    auth_data = {
-      'username': register_data['username'],
-      'password': register_data['password'],
-    }
-    response = requests.post(BASE_URL + reverse('auth'), json.dumps(auth_data), headers=HEADERS)
-    token = response.json()['token']
-    tokens.append(token)
-    headers = {'Authorization':'JWT {0}'.format(token), **HEADERS}
     response = requests.post(BASE_URL + reverse('post-list'), json.dumps(post_content), headers=headers)
     posts.append(response.json()['id'])
 

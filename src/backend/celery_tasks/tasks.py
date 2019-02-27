@@ -2,11 +2,11 @@ import re
 import os
 import clearbit
 from collections import Counter
+
 from dotenv import load_dotenv, find_dotenv
 
 from .celery import app
-from .models import Word, PostWord, Post, Profile, User
-
+from blog_api.models import Word, PostWord, Post, Profile, User
 
 @app.task
 def count_words(id, created):
@@ -44,8 +44,8 @@ def get_profile_info_from_clearbit(id, email):
   response = clearbit.Enrichment.find(email=email, stream=True)
   if response['person'] is not None:
     user = User.objects.get(id=id)
-    location = response['person'].get('location', '')
-    bio = response['person'].get('bio', '')
-    profile = Profile.objects.create(location=location, user=user)
+    location = response['person'].get('location', 'dfffff')
+    bio = response['person'].get('bio', 'ffffffff')
+    profile = Profile.objects.create(location=location, bio=123, user=user)
     user.profile = profile
     user.save()
