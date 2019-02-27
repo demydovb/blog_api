@@ -34,8 +34,6 @@ class ProfileView(generics.RetrieveUpdateAPIView):
 
 class PostListDetailViewSet(viewsets.ModelViewSet):
   queryset = Post.objects.order_by("-published")
-  serializer_class = PostSerializer
-  permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
 
   def get_permissions(self):
     """
@@ -48,6 +46,12 @@ class PostListDetailViewSet(viewsets.ModelViewSet):
     else:
       permission_classes = [IsOwnerOrReadOnly]
     return [permission() for permission in permission_classes]
+
+  def get_serializer_class(self):
+    if self.action in ['update', 'retrieve', 'partial_update', 'destroy']:
+      return PostDetailSerializer
+    else:
+      return PostSerializer
 
   def list(self, request, *args, **kwargs):
     """
@@ -62,35 +66,6 @@ class PostListDetailViewSet(viewsets.ModelViewSet):
       return response.Response(serializer.data)
     return super().list(request, *args, **kwargs)
 
-
-  def retrieve(self, request, *args, **kwargs):
-    """
-    get: Retrieve specific post.
-    """
-    self.serializer_class = PostDetailSerializer
-    return super().retrieve(request, *args, **kwargs)
-
-
-  def update(self, request, *args, **kwargs):
-    """
-    put: Update specific post.
-    """
-    self.serializer_class = PostDetailSerializer
-    return super().update(request, *args, **kwargs)
-
-  def partial_update(self, request, *args, **kwargs):
-    """
-    patch: Update specific post.
-    """
-    self.serializer_class = PostDetailSerializer
-    return super().update(request, *args, **kwargs)
-
-  def destroy(self, request, *args, **kwargs):
-    """
-    delete: Delete specific post.
-    """
-    self.serializer_class = PostDetailSerializer
-    return super().destroy(request, *args, **kwargs)
 
   @decorators.action(methods=['get'], detail=False, url_path='my-posts')
   def retrieve_my_posts(self, request, pk=None):
