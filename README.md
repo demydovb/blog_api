@@ -1,8 +1,10 @@
 # Blog application for corporate clients (API) #
+
 Registered users can add/update new posts, update personal information.
-All users can read posts and search posts by selected user.
+All users can read/like posts and search posts by selected user.
 All users can see unique word's occurrence in selected posts or in all posts (Occurrence ofunique words is being calculated in background during saving (Celery + Redis))
 
+NB: For registration should be user e-mail which present in EmailHunters database.
 
 **Pre-requirements:**
   - python3.6
