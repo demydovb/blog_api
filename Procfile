@@ -1,1 +1,1 @@
-web: gunicorn blogapi.wsgi:application --log-file -
+web: PYTHONPATH=$(pwd)'/blogapi' gunicorn blogapi.wsgi:application --log-file -
