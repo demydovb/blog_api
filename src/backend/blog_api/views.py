@@ -41,7 +41,7 @@ class PostListDetailViewSet(viewsets.ModelViewSet):
     """
     if self.action == 'list' or self.action == 'retrieve':
       permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    elif self.action =='create':
+    elif self.action =='create' or self.action == 'like_post':
       permission_classes = [permissions.IsAuthenticated]
     else:
       permission_classes = [IsOwnerOrReadOnly]
@@ -76,12 +76,12 @@ class PostListDetailViewSet(viewsets.ModelViewSet):
     serializer = PostSerializer(my_posts, many=True)
     return response.Response(serializer.data)
 
-  @decorators.action(methods=['post'], detail=True, url_path='like', permission_classes=[permissions.IsAuthenticated])
+  @decorators.action(methods=['post'], detail=True, url_path='like')
   def like_post(self, request, pk=None):
     """
     post: Like specific post.
     """
-    liked_post = get_object_or_404(Post, pk=pk)
+    liked_post = get_object_or_404(Post.objects.prefetch_related(), pk=pk)
     user = self.request.user
     if user not in liked_post.liked_users.all():
       user.liked_posts.add(liked_post)
