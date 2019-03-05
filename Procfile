@@ -1,1 +1,1 @@
-web: python .blogapi/manage.py runserver 0.0.0.0:$PORT --noreload
+web: gunicorn blogapi.wsgi:application --log-file -
