@@ -15,6 +15,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '*!ma!pnc78=t18+4)9+xv*426*3e$dh%8l8y3pmzoz&hd#3-k8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# I left it True because otherwise django-rest-swagger will not serve docs page on Heroku
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -141,7 +142,6 @@ BROKER_TRANSPORT = "redis"
 if 'ON_HEROKU' in os.environ:
     BROKER_URL = CELERY_REDIS_URL = os.environ.get('REDIS_URL')
     CELERY_RESULT_BACKEND = os.environ.get('REDIS_URL')
-    DEBUG = True
 else:
     BROKER_HOST = CELERY_REDIS_HOST = "localhost"
     BROKER_PORT = CELERY_REDIS_PORT = 6379
