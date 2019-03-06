@@ -1,4 +1,5 @@
 import os
+import urlparse
 import datetime
 import django_heroku
 
@@ -136,8 +137,14 @@ STATIC_URL = '/static/'
 # REDIS related settings
 BROKER_TRANSPORT = "redis"
 
-BROKER_HOST = "localhost"
-BROKER_PORT = 6379
+if 'DYNO' in os.environ:
+    url = urlparse.urlparse(os.environ.get('REDIS_URL'))
+    BROKER_HOST = url.hostname
+    BROKER_PORT = url.port
+else:
+    BROKER_HOST = "localhost"
+    BROKER_PORT = 6379
+
 BROKER_VHOST = "0"
 CELERY_RESULT_BACKEND = "redis"
 CELERY_REDIS_HOST = "localhost"
