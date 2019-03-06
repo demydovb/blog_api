@@ -46,8 +46,8 @@ def get_profile_info_from_clearbit(id, email):
     response = clearbit.Enrichment.find(email=email, stream=True)
     if response['person'] is not None:
         user = User.objects.get(id=id)
-        location = response['person'].get('location', 'dfffff')
-        bio = response['person'].get('bio', 'ffffffff')
+        location = response['person'].get('location', '')
+        bio = response['person'].get('bio', '')
         profile = Profile.objects.create(location=location, bio=123, user=user)
         user.profile = profile
         user.save()
