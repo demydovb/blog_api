@@ -141,7 +141,7 @@ BROKER_TRANSPORT = "redis"
 if 'ON_HEROKU' in os.environ:
     BROKER_URL = CELERY_REDIS_URL = os.environ.get('REDIS_URL')
     CELERY_RESULT_BACKEND = os.environ.get('REDIS_URL')
-    DEBUG = False
+    DEBUG = True
 else:
     BROKER_HOST = CELERY_REDIS_HOST = "localhost"
     BROKER_PORT = CELERY_REDIS_PORT = 6379
