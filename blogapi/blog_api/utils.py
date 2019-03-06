@@ -6,7 +6,10 @@ load_dotenv(find_dotenv())
 email_hunter_client = EmailHunterClient(os.getenv('EMAILHUNTERS_KEY'))
 
 def check_if_email_exists(email):
-   return email_hunter_client.exist(email)[0]
+   try: # In case of emailhunter is down, don't validate if email exists in their db.
+     return email_hunter_client.exist(email)[0]
+   except:
+      return True
 
 
 def get_existing_email(domain):

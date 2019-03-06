@@ -91,8 +91,11 @@ class UserSerializer(serializers.ModelSerializer):
       user.profile = profile
       user.save()
     else:
-      from celery_tasks.tasks import get_profile_info_from_clearbit
-      get_profile_info_from_clearbit.delay(user.pk, validated_data['email'])
+      try:
+        from celery_tasks.tasks import get_profile_info_from_clearbit
+        get_profile_info_from_clearbit.delay(user.pk, validated_data['email'])
+      except:
+        pass
     return user
 
   def update(self, instance, validated_data):

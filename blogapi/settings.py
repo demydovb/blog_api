@@ -2,6 +2,8 @@ import os
 import datetime
 import django_heroku
 
+from urllib.parse import urlparse
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -136,12 +138,16 @@ STATIC_URL = '/static/'
 # REDIS related settings
 BROKER_TRANSPORT = "redis"
 
-BROKER_HOST = "localhost"
-BROKER_PORT = 6379
+if 'ON_HEROKU' in os.environ:
+    BROKER_URL = CELERY_REDIS_URL = os.environ.get('REDIS_URL')
+    CELERY_RESULT_BACKEND = os.environ.get('REDIS_URL')
+    DEBUG = False
+else:
+    BROKER_HOST = CELERY_REDIS_HOST = "localhost"
+    BROKER_PORT = CELERY_REDIS_PORT = 6379
+    CELERY_RESULT_BACKEND = "redis"
+
 BROKER_VHOST = "0"
-CELERY_RESULT_BACKEND = "redis"
-CELERY_REDIS_HOST = "localhost"
-CELERY_REDIS_PORT = 6379
 CELERY_REDIS_DB = 0
 
 django_heroku.settings(locals())
