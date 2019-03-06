@@ -77,7 +77,7 @@ class PostListDetailViewSet(viewsets.ModelViewSet):
     return response.Response(serializer.data)
 
   @decorators.action(methods=['post'], detail=True, url_path='like')
-  def like_post(self, request, pk=None):
+  def like_specific_post(self, request, pk=None):
     """
     post: Like specific post.
     """
