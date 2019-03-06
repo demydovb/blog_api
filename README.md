@@ -2,7 +2,7 @@
 
 - Registered users can add/update new posts, update personal information.
 - All users can read/like posts and search posts by selected user.
-- All users can see unique word's occurrence in selected posts or in all posts (Occurrence ofunique words is being calculated in background during saving post (Celery + Redis))
+- All users can see unique word's occurrence in selected posts or in all posts (Occurrence of unique words is being calculated in background during saving post (Celery + Redis))
 
 Play around: https://demydovbohdan.herokuapp.com (Deployed on Heroku)
 
