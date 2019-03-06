@@ -4,7 +4,14 @@
 - All users can read/like posts and search posts by selected user.
 - All users can see unique word's occurrence in selected posts or in all posts (Occurrence ofunique words is being calculated in background during saving (Celery + Redis))
 
+Play around: https://demydovbohdan.herokuapp.com (Deployed on Heroku)
+
+API Documentation - https://demydovbohdan.herokuapp.com/docs/
+
 NB: For registration should be user e-mail which present in EmailHunters database.
+
+___
+## Run locally ##
 
 **Pre-requirements:**
   - python3.6
@@ -41,6 +48,5 @@ Start script:
 - `from blog_api.test_bot import main`
 - `main()`
 3) In ouput you will get unstructured data. For better view after finishing scripts just open main page in your browser.
-![Screenshot](https://b.radikal.ru/b13/1902/5e/4751cc4f8be0.png "Screenshot")
+![Screenshot](https://a.radikal.ru/a27/1903/95/08e7fd3b26b3.png "Screenshot")
 
-**API Documentation** - http://localhost:8000/docs/
