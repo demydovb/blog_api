@@ -22,8 +22,9 @@ Install requirements:
   `pip install requirements.txt`
 
 Start app:
-1) Create .env file in root directory and populate it with data:
+1) Create .env file in project directory and populate it with data:
 
+>  DJANGO_SECRET_KEY=XXX<br />
 >  EMAILHUNTERS_KEY=XXX<br />
 >  CLEARBIT_KEY=XXX<br />
 >  BOT_CONF_NUMBER_OF_USERS=INT<br />
