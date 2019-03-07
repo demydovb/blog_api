@@ -4,7 +4,7 @@
 - All users can read/like posts and search posts by selected user.
 - All users can see unique word's occurrence in selected posts or in all posts (Occurrence of unique words is being calculated in background during saving post (Celery + Redis))
 
-Play around: https://demydovbohdan.herokuapp.com (Deployed on Heroku)
+Play around: https://demydovbohdan.herokuapp.com (Deployed on Heroku Free Plan, so processing first request may take a while)
 
 API Documentation - https://demydovbohdan.herokuapp.com/docs/
 
